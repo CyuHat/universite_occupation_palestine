@@ -46,13 +46,15 @@ class_top3 <-
 write_rds(class_top3, file = "MyData/class_top3.rds")
 
 # Embedding ----
+class_top3 <- 
+  class_top3 %>% 
+  mutate(text = if_else(text == "", "vide", text))
+
 embed_top3 <- embed_text(class_top3$text)
 
-write_ds(embed_top3, file = "MyData/embed_top3.rds")
+write_rds(embed_top3, file = "MyData/embed_top3.rds")
 
 # cluster ----
-embed_top3 <- iris[1:4]
-
 pca_top3 <- PCA(embed_top3)
 
 hcpc_top3 <- HCPC(pca_top3, nb.clust = -1)
@@ -60,7 +62,7 @@ hcpc_top3 <- HCPC(pca_top3, nb.clust = -1)
 # Save ----
 ## embed_top3
 embed_top3 <- hcpc_top3$data.clust
-write_ds(embed_top3, file = "MyData/embed_top3.rds")
+write_rds(embed_top3, file = "MyData/embed_top3.rds")
 
 class_top3$clust <- hcpc_top3$data.clust$clust 
 write_rds(class_top3, file = "MyData/class_top3.rds")
