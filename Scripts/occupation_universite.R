@@ -1,8 +1,9 @@
 # Libraries ----
-pacman::p_load(tidyverse, rvest, hayalbaz)
+pacman::p_load(tidyverse, rvest, hayalbaz, htmltools, xml2)
 
 # Data ----
-brw <- puppet$new("https://news.google.com/search?q=universit%C3%A9%20AND%20occupation%20site%3A.ch%20when%3A1y&hl=fr&gl=FR&ceid=FR%3Afr")
+link <- "https://news.google.com/search?q=universit%C3%A9%20AND%20occupation%20before%3A2024-05-22&hl=fr&gl=CH&ceid=CH%3Afr"
+brw <- puppet$new(link)
   
 brw$view()
   
@@ -10,7 +11,7 @@ articles <- brw$get_elements("article")
 
 brw$close()
 
-write_rds(articles, file = "universite_occupation_palestine/MyData/articles_html.rds")
+articles
 
 # Journal
 (
@@ -33,13 +34,27 @@ sources <-
 # Datetime
 (
   datetimes <- 
-  articles %>% 
+    articles %>% 
     html_element("time") %>% 
     html_attr("datetime") %>% 
     lubridate::as_datetime()
 )
 
-articles
+(
+  urls <- 
+    articles %>% 
+    html_element("a.WwrzSb") %>% 
+    html_attr("href") %>% 
+    url_absolute("https://news.google.com/")
+)
+
+(
+  auteur <- 
+    articles %>% 
+    html_element("div.bInasb span.PJK1m") %>% 
+    html_text2() %>% 
+    str_remove_all("^Par ")
+)
 
 # Proportion
 tibble(src = sources) %>% 
@@ -50,10 +65,11 @@ tibble(src = sources) %>%
 df_articles <- 
   tibble(sources = sources,
          titres = titres,
-         datetimes = datetimes) %>% 
-  drop_na()
+         datetimes = datetimes,
+         auteur = auteur,
+         urls = urls)
 
-write_rds(df_articles, file = "universite_occupation_palestine/MyData/df_articles.rds")
+write_rds(df_articles, file = "MyData/df_articles.rds")
 # faviconV2 = Le temps (13.6%)
 # faviconV2_034 = La Tribune de Genève (10%)
 # faviconV2_022 =  Le Blick(8.57%)

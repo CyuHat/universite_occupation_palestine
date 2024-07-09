@@ -1,0 +1,20 @@
+---
+title: "Couverture médiatique suisse romande des occupations des universités"
+author: "Vestin Hategekimana"
+format: html
+editor: visual
+---
+
+```{r}
+# Libraries ----
+pacman::p_load(tidyverse, hrbrthemes)
+
+# Options ----
+theme_set(theme_ipsum())
+
+# Data ----
+class_top3 <- read_rds("MyData/class_top3.rds")
+embed_top3 <- read_rds("MyData/embed_top3.rds")
+```
+
+## Introduction

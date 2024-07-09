@@ -1,5 +1,5 @@
 # Libraries ----
-pacman::p_load(tidyverse, rvest, hayalbaz, hrbrthemes)
+pacman::p_load(tidyverse, rvest, hrbrthemes)
 
 # Option ----
 theme_set(theme_ipsum())
